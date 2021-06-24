@@ -1,0 +1,175 @@
+<?xml version='1.0'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fyp_robot">
+
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+<!-- Add the rectangular base -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.5 0.5 0.3"/> <!-- 0.5 x 0.5 x 1.0 -->
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+     <geometry>
+      <box size=".5 .5 0.3"/> <!-- 0.5 x 0.5 x 1.0 -->
+    </collision>
+    <inertial>
+      <mass value="10"/> <!-- in (kgs)-->
+    </inertial>
+  </link>
+<!-- add a caster front to the robot -->
+  <link name="caster_front">
+    <visual>
+      <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="white"/>
+    </visual>
+    <collision>
+     <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+  <joint name="caster_front_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="caster_front"/>
+    <origin xyz="0 -0.19 -0.15" rpy="0 0 0"/>
+  </joint>
+<!-- add a caster back left to the robot -->
+  <link name="caster_back_left">
+    <visual>
+      <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+  <joint name="caster_back_left_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="caster_back_left"/>
+    <origin xyz="0.19 0.19 -0.15" rpy="0 0 0"/>
+  </joint>
+<!-- add a caster back right to the robot -->
+  <link name="caster_back_right">
+    <visual>
+      <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <sphere radius="0.06"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+  <joint name="caster_back_right_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="caster_back_right"/>
+    <origin xyz="-0.19 0.19 -0.15" rpy="0 0 0"/>
+  </joint>
+<!-- add a left wheel to the robot -->
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 1.57075 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <cylinder length="0.05" radius="0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 1.57075 0"/>
+    </collision>
+  </link>
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+      <origin xyz="0.225 0 -0.115" rpy="0 0 0"/>
+  </joint>
+<!-- add a right wheel to the robot -->
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 1.57075 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <cylinder length="0.05" radius="0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 1.57075 0"/>
+    </collision>
+  </link>
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+      <origin xyz="-0.225 0 -0.115" rpy="0 0 0"/>
+  </joint>
+<!-- add the top part to the robot -->
+  <link name="base_back">
+    <visual>
+      <geometry>
+        <box size="0.3 0.01 0.2"/>
+      </geometry>
+      <origin xyz="0 0.245 0.25" rpy="0 0 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <box size="0.3 0.01 0.2"/>
+      </geometry>
+      <origin xyz="0 0.245 0.25" rpy="0 0 0"/>
+    </collision>
+  </link>
+  <joint name="base_back_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_back"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_top">
+    <visual>
+      <geometry>
+        <box size="0.5 0.5 0.5"/>
+      </geometry>
+      <origin xyz="0 0 0.6" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.5 0.5 0.5"/>
+      </geometry>
+      <origin xyz="0 0 0.6" rpy="0 0 0"/>
+    </collision>
+  </link>
+  <joint name="base_top_joint" type="fixed">
+    <parent link="base_back"/>
+    <child link="base_top"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>

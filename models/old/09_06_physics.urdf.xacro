@@ -1,0 +1,212 @@
+<?xml version='1.0'?>
+<robot name="fyp_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+<!-- ixx ixy ixz
+     ixy iyy iyz
+     ixz iyz izz -->
+
+  <xacro:property name="base_xy" value="0.5" />
+  <xacro:property name="b_base_z" value="0.3" />
+  <xacro:property name="t_base_z" value="0.5" />
+  <xacro:property name="wheeldiam" value="0.2" />
+  <xacro:property name="casterradi" value="0.06" />
+  <xacro:property name="wheellength" value="0.05" />
+  <xacro:property name="pi" value="3.1415" />
+  <xacro:property name="caster_mass" value="1" />
+  <xacro:property name="wheel_mass" value="5" />
+  <xacro:property name="base_mass" value="10" />
+
+  <xacro:property name="base_xy2" value="${base_xy*base_xy}" />
+  <xacro:property name="b_base_z2" value="${b_base_z*b_base_z}" />
+  <xacro:property name="t_base_z2" value="${t_base_z*t_base_z}" />
+
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+  <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+  <xacro:macro name="cuboid_inertial" params="mass height">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="${(1/12)*base_mass*(height*height+base_xy2)}" ixy="0.0" ixz="0.0" iyy="${(1/12)*base_mass*(base_xy2+base_xy2)}" iyz="0.0" izz="${(1/12)*base_mass*(base_xy2+height*height)}" />
+    </inertial>
+  </xacro:macro>
+
+<!-- Add the rectangular base -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${base_xy} ${base_xy} ${b_base_z}"/> <!-- 0.5 x 0.5 x 1.0 -->
+      </geometry> 
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${base_xy} ${base_xy} ${b_base_z}"/> <!-- 0.5 x 0.5 x 1.0 -->
+      </geometry>
+    </collision>
+    <xacro:cuboid_inertial mass="${base_mass}" height="${b_base_z}"/>
+  </link>
+<!-- add a caster front to the robot -->
+  <link name="caster_front">
+    <visual>
+      <geometry>
+        <sphere radius="${casterradi}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="white"/>
+    </visual>
+    <collision>
+     <geometry>
+        <sphere radius="${casterradi}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <xacro:default_inertial mass="${caster_mass}"/>
+  </link>
+  <joint name="caster_front_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="caster_front"/>
+    <origin xyz="0 -0.19 -0.15" rpy="0 0 0"/>
+  </joint>
+<!-- add a caster back left to the robot -->
+  <link name="caster_back_left">
+    <visual>
+      <geometry>
+        <sphere radius="${casterradi}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <sphere radius="${casterradi}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <xacro:default_inertial mass="${caster_mass}"/>
+  </link>
+  <joint name="caster_back_left_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="caster_back_left"/>
+    <origin xyz="0.19 0.19 -0.15" rpy="0 0 0"/>
+  </joint>
+<!-- add a caster back right to the robot -->
+  <link name="caster_back_right">
+    <visual>
+      <geometry>
+        <sphere radius="${casterradi}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <sphere radius="${casterradi}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <xacro:default_inertial mass="${caster_mass}"/>
+  </link>
+  <joint name="caster_back_right_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="caster_back_right"/>
+    <origin xyz="-0.19 0.19 -0.15" rpy="0 0 0"/>
+  </joint>
+<!-- add a left wheel to the robot -->
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${wheellength}" radius="${wheeldiam/2}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <cylinder length="${wheellength}" radius="${wheeldiam/2}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+    </collision>
+    <xacro:default_inertial mass="${wheel_mass}"/>
+  </link>
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+      <origin xyz="0.225 0 -0.115" rpy="0 0 0"/>
+  </joint>
+<!-- add a right wheel to the robot -->
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="${wheellength}" radius="${wheeldiam/2}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <cylinder length="${wheellength}" radius="${wheeldiam/2}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+    </collision>
+    <xacro:default_inertial mass="${wheel_mass}"/>
+  </link>
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+      <origin xyz="-0.225 0 -0.115" rpy="0 0 0"/>
+  </joint>
+<!-- add the top part to the robot -->
+  <link name="base_back">
+    <visual>
+      <geometry>
+        <box size="0.3 0.01 0.2"/>
+      </geometry>
+      <origin xyz="0 0.245 0.25" rpy="0 0 0"/>
+    </visual>
+    <collision>
+     <geometry>
+        <box size="0.3 0.01 0.2"/>
+      </geometry>
+      <origin xyz="0 0.245 0.25" rpy="0 0 0"/>
+    </collision>
+    <xacro:default_inertial mass="1"/>
+  </link>
+  <joint name="base_back_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_back"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_top">
+    <visual>
+      <geometry>
+        <box size="${base_xy} ${base_xy} ${t_base_z}"/>
+      </geometry>
+      <origin xyz="0 0 0.6" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${base_xy} ${base_xy} ${t_base_z}"/>
+      </geometry>
+      <origin xyz="0 0 0.6" rpy="0 0 0"/>
+    </collision>
+    <xacro:cuboid_inertial mass="${base_mass}" height="${t_base_z}"/>
+  </link>
+  <joint name="base_top_joint" type="fixed">
+    <parent link="base_back"/>
+    <child link="base_top"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>
